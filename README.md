@@ -1,11 +1,31 @@
 
-  # Wholesome CSE Portfolio
+# Dhruv Kolhe
 
-  This is a code bundle for Wholesome CSE Portfolio. The original project is available at https://www.figma.com/design/1n8oGjTlyvexnDb4oPDNKr/Wholesome-CSE-Portfolio.
+Personal developer portfolio built with React, TypeScript, Vite, and Motion.
 
-  ## Running the code
+## 🛠️ Stack
 
-  Run `npm i` to install the dependencies.
+- **Core**: React, TypeScript, Vite
+- **Styling**: Tailwind CSS
+- **Animations**: Motion (Framer Motion)
 
-  Run `npm run dev` to start the development server.
+## 🚀 Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start local server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## 📬 Contact & Links
+
+- **GitHub**: [github.com/dhruvmkolhe](https://github.com/dhruvmkolhe)
+- **LinkedIn**: [linkedin.com/in/dhruv-kolhe-409706303](https://www.linkedin.com/in/dhruv-kolhe-409706303/)
+- **Email**: davpatal@gmail.com
+
   
