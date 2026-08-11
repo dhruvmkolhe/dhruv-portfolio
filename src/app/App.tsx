@@ -605,13 +605,13 @@ export default function App() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.46, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-14"
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14"
           >
             <motion.a
               href="#projects"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-primary text-primary-foreground rounded-full font-semibold shadow-sm hover:shadow-md transition-shadow w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-primary text-primary-foreground rounded-full font-semibold shadow-sm hover:shadow-md transition-shadow"
             >
               <FontAwesomeIcon icon={faLaptopCode} className="w-4 h-4" />
               see my work
@@ -620,7 +620,7 @@ export default function App() {
               href="#contact"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 border border-border text-foreground rounded-full font-semibold hover:bg-muted transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-border text-foreground rounded-full font-semibold hover:bg-muted transition-colors"
             >
               <FontAwesomeIcon icon={faFaceSmile} className="w-4 h-4 text-secondary" />
               say hello
@@ -628,17 +628,8 @@ export default function App() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => setResumeOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-secondary text-secondary-foreground rounded-full font-semibold hover:bg-secondary/90 transition-colors w-full sm:w-auto"
-            >
-              <FontAwesomeIcon icon={faFileArrowDown} className="w-4 h-4" />
-              resume
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
               onClick={() => setCoverOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-accent text-accent-foreground rounded-full font-semibold hover:bg-accent/80 transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-accent text-accent-foreground rounded-full font-semibold hover:bg-accent/80 transition-colors"
             >
               <FontAwesomeIcon icon={faFileArrowDown} className="w-4 h-4" />
               cover letter
