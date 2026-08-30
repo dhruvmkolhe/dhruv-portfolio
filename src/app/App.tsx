@@ -5,7 +5,6 @@ import {
   faHand,
   faArrowDown,
   faEnvelope,
-  faHeart,
   faDatabase,
   faMicrochip,
   faTerminal,
@@ -20,7 +19,6 @@ import {
   faLightbulb,
   faGraduationCap,
   faExternalLink,
-  faCircleNodes,
   faLaptopCode,
   faFaceSmile,
   faLeaf,
@@ -28,23 +26,21 @@ import {
   faPalette,
   faBolt,
   faServer,
-  faWind,
   faRocket,
-  faArrowRightArrowLeft,
   faPaperPlane,
-  faBrain,
   faRobot,
   faHardDrive,
   faFileArrowDown,
   faXmark,
   faPrint,
   faMapPin,
-  faPhone,
   faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faGithub,
   faLinkedin,
+  faXTwitter,
+  faLetterboxd,
   faPython,
   faJsSquare,
   faReact,
@@ -171,21 +167,16 @@ const skills = [
   { label: "SQL",              icon: faDatabase,            brand: false, color: "#EC4899" },
   // Frontend
   { label: "React",            icon: faReact,               brand: true,  color: "#06B6D4" },
-  { label: "Next.js",          icon: faLayerGroup,          brand: false, color: "#2C1810" },
   { label: "Svelte",           icon: faBolt,                brand: false, color: "#FF3E00" },
-  { label: "Tailwind CSS",     icon: faWind,                brand: false, color: "#38BDF8" },
   { label: "Vite",             icon: faRocket,              brand: false, color: "#646CFF" },
   // Backend
   { label: "Node.js",          icon: faNodeJs,              brand: true,  color: "#22C55E" },
   { label: "Express.js",       icon: faServer,              brand: false, color: "#444444" },
   { label: "FastAPI",          icon: faTerminal,            brand: false, color: "#009688" },
-  { label: "REST APIs",        icon: faArrowRightArrowLeft, brand: false, color: "#6366F1" },
   // Databases
   { label: "PostgreSQL",       icon: faHardDrive,           brand: false, color: "#4169E1" },
   { label: "MongoDB",          icon: faLeaf,                brand: false, color: "#47A248" },
-  // AI / ML
-  { label: "Machine Learning", icon: faCircleNodes,         brand: false, color: "#A78BFA" },
-  { label: "Scikit-learn",     icon: faBrain,               brand: false, color: "#F7931E" },
+  // AI
   { label: "Claude",           icon: faRobot,               brand: false, color: "#C95234" },
   // Tools
   { label: "Git",              icon: faGitAlt,              brand: true,  color: "#F97316" },
@@ -254,9 +245,12 @@ const currently = [
 ];
 
 const socials = [
-  { icon: faGithub,   label: "github",   href: "https://github.com/dhruvmkolhe",   brand: true  },
-  { icon: faLinkedin, label: "linkedin", href: "https://www.linkedin.com/in/dhruv-kolhe-409706303/", brand: true  },
-  { icon: faEnvelope, label: "email",    href: "mailto:davpatal@gmail.com", brand: false },
+  { icon: faGithub,     label: "github",      href: "https://github.com/dhruvmkolhe",                   brand: true  },
+  { icon: faLinkedin,   label: "linkedin",    href: "https://www.linkedin.com/in/dhruv-kolhe-409706303/", brand: true  },
+  { icon: faXTwitter,   label: "x / twitter", href: "https://x.com/DhruvKolhe",                        brand: true  },
+  { icon: faLetterboxd, label: "letterboxd",  href: "https://letterboxd.com/cinepunmaster/",            brand: true  },
+  { icon: faTv,         label: "serializd",   href: "https://www.serializd.com/user/cinepunmaster",     brand: false },
+  { icon: faEnvelope,   label: "email",       href: "mailto:davpatal@gmail.com",                        brand: false },
 ];
 
 // ── Resume Data ──────────────────────────────────────────────────────────────
@@ -537,7 +531,7 @@ export default function App() {
       {/* ── Hero ────────────────────────────────────────────────────────── */}
       <section
         id="home"
-        className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-28 pb-20 overflow-hidden"
+        className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-14 md:pt-28 md:pb-16 overflow-hidden"
       >
         {/* Memphis floating shapes */}
         <FloatShape className="top-24 left-6 md:left-16"           size={72} color="#C9523420" shape="circle"   delay={0}   />
@@ -548,14 +542,14 @@ export default function App() {
         <FloatShape className="top-20 right-1/3"                   size={20} color="#F2C14E50" shape="circle"   delay={3}   />
         <FloatShape className="bottom-24 left-1/3"                 size={34} color="#C9523420" shape="square"   delay={1.8} />
 
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
+        <div className="relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center">
 
           {/* Greeting pill */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold mb-8"
+            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold mb-6 sm:mb-8"
           >
             <motion.span
               animate={{ rotate: [0, 16, -8, 16, -4, 10, 0] }}
@@ -573,7 +567,7 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h1 className="font-display leading-[0.95] mb-6">
+            <h1 className="font-display leading-[0.95] mb-5 sm:mb-6">
               <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-foreground">
                 {"I'm "}
                 <span className="text-primary italic">Dhruv</span>
@@ -593,7 +587,7 @@ export default function App() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
-            className="font-body text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed"
+            className="font-body text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-8 sm:mb-10 leading-relaxed"
           >
             I love to learn and create new things, and understand the world around
             me, one bug at a time. I write code, break it, fix it, and, every now
@@ -605,13 +599,13 @@ export default function App() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.46, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 mb-8 sm:mb-10"
           >
             <motion.a
               href="#projects"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-primary text-primary-foreground rounded-full font-semibold shadow-sm hover:shadow-md transition-shadow"
+              className="inline-flex items-center justify-center gap-2 px-7 sm:px-8 py-3 sm:py-3.5 bg-primary text-primary-foreground rounded-full font-semibold shadow-sm hover:shadow-md transition-shadow"
             >
               <FontAwesomeIcon icon={faLaptopCode} className="w-4 h-4" />
               see my work
@@ -620,7 +614,7 @@ export default function App() {
               href="#contact"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-border text-foreground rounded-full font-semibold hover:bg-muted transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-7 sm:px-8 py-3 sm:py-3.5 border border-border text-foreground rounded-full font-semibold hover:bg-muted transition-colors"
             >
               <FontAwesomeIcon icon={faFaceSmile} className="w-4 h-4 text-secondary" />
               say hello
@@ -629,7 +623,7 @@ export default function App() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setCoverOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-accent text-accent-foreground rounded-full font-semibold hover:bg-accent/80 transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-7 sm:px-8 py-3 sm:py-3.5 bg-accent text-accent-foreground rounded-full font-semibold hover:bg-accent/80 transition-colors"
             >
               <FontAwesomeIcon icon={faFileArrowDown} className="w-4 h-4" />
               cover letter
@@ -659,16 +653,27 @@ export default function App() {
               {currently[currentlyIdx]}
             </motion.span>
           </motion.div>
-        </div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <FontAwesomeIcon icon={faArrowDown} className="w-4 h-4" />
-        </motion.div>
+          {/* Scroll indicator arrow */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.85 }}
+            className="mt-6 sm:mt-8"
+          >
+            <motion.a
+              href="#about"
+              aria-label="Scroll down to about"
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              whileHover={{ scale: 1.2, y: 2 }}
+              whileTap={{ scale: 0.92 }}
+              className="inline-flex items-center justify-center w-9 h-9 rounded-full text-foreground/50 hover:text-primary hover:bg-card/70 border border-transparent hover:border-border transition-all cursor-pointer"
+            >
+              <FontAwesomeIcon icon={faArrowDown} className="w-4 h-4" />
+            </motion.a>
+          </motion.div>
+        </div>
       </section>
 
       {/* ── About ───────────────────────────────────────────────────────── */}
@@ -909,7 +914,7 @@ export default function App() {
             </motion.a>
 
             {/* Social links */}
-            <div className="flex items-center justify-center gap-10">
+            <div className="flex flex-wrap items-center justify-center gap-7 sm:gap-10">
               {socials.map(({ icon, label, href }) => (
                 <motion.a
                   key={label}
@@ -930,19 +935,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── Footer ──────────────────────────────────────────────────────── */}
-      <footer className="py-8 px-6 border-t border-border">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-sm text-muted-foreground font-body flex items-center gap-1.5">
-            made with{" "}
-            <FontAwesomeIcon icon={faHeart} className="w-3.5 h-3.5 text-primary" />
-            {" "}by dhruv kolhe &middot; {new Date().getFullYear()}
-          </p>
-          <p className="text-xs text-muted-foreground font-mono">
-            built with React + motion
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
