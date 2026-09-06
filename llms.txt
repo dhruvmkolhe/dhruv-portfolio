@@ -1,0 +1,34 @@
+﻿# Dhruv Kolhe — Developer Portfolio
+
+> Personal portfolio and developer profile of Dhruv Kolhe, a Computer Science undergraduate and software engineer specializing in modern web development, intuitive UX, and clean code.
+
+## Core Profile
+- Name: Dhruv Kolhe
+- Role: Computer Science Student & Software Engineer
+- University: Pimpri Chinchwad University (PCU), Pune, India
+- Degree: Bachelor of Technology (B.Tech) in Computer Science & Engineering
+- Email: davpatal@gmail.com
+- Portfolio Website: https://dhruvmkolhe.github.io/
+- GitHub: https://github.com/dhruvmkolhe
+- LinkedIn: https://www.linkedin.com/in/dhruv-kolhe-409706303/
+- X / Twitter: https://x.com/DhruvKolhe
+- Letterboxd: https://letterboxd.com/cinepunmaster/
+- Serializd: https://www.serializd.com/user/cinepunmaster
+
+## Technical Stack & Competencies
+- Programming Languages: TypeScript, JavaScript, Python, C++, SQL, HTML5, CSS3
+- Frontend Development: React, Svelte, Vite, Tailwind CSS, Motion (Framer Motion), Responsive Design
+- Backend & Data: Node.js, Express.js, FastAPI, PostgreSQL, MongoDB, RESTful APIs
+- Tooling & Infrastructure: Docker, Linux, Git, GitHub, Vite, Postman, Figma
+
+## Featured Projects
+- ProjectHub: A community-driven platform where developers showcase projects, receive structured feedback, and build public portfolios. Built with SvelteKit & Three.js. (https://github.com/dhruvmkolhe/project-hub)
+- CodeX: A browser-based collaborative coding workspace combining live editing, AI assistance, and multi-language execution. Built with React, TypeScript & WebSockets. (https://github.com/dhruvmkolhe/codex-ide)
+- LinkForge: A high-scale URL management and analytics platform featuring intelligent routing, access controls, and low-latency redirection. (https://github.com/dhruvmkolhe/common)
+
+## Contact & Collaboration
+- Open to software engineering internships, junior developer roles, and open-source contributions.
+- Email: davpatal@gmail.com
+
+## Detailed Documentation
+- Full Profile & Project Breakdown: https://dhruvmkolhe.github.io/llms-full.txt
