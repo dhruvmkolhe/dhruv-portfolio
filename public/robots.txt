@@ -1,0 +1,13 @@
+# Robots.txt for Dhruv Kolhe Portfolio
+# https://dhruvmkolhe.github.io/
+
+User-agent: *
+Allow: /
+Disallow: /dist/
+
+# Search Engine Sitemaps
+Sitemap: https://dhruvmkolhe.github.io/sitemap.xml
+
+# LLM Crawler Guidance
+# https://dhruvmkolhe.github.io/llms.txt
+

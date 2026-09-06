@@ -32,6 +32,24 @@ export default defineConfig({
     },
   },
 
-  // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
+
+  build: {
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'motion-vendor': ['motion'],
+          'fontawesome-vendor': [
+            '@fortawesome/react-fontawesome',
+            '@fortawesome/free-solid-svg-icons',
+            '@fortawesome/free-brands-svg-icons',
+            '@fortawesome/fontawesome-svg-core',
+          ],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
 })

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" shape-rendering="geometricPrecision">
+  <defs>
+    <linearGradient id="terracotta-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E05C3B"/>
+      <stop offset="100%" stop-color="#B24024"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Squircle Base with transparent exterior -->
+  <rect x="0" y="0" width="64" height="64" rx="16" fill="url(#terracotta-grad)"/>
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="15.25" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+
+  <!-- Editorial Monogram "D" in Warm Cream (#FFF9F0) -->
+  <path d="M 14 17 L 31 17 C 40 17 44.5 22.5 44.5 32 C 44.5 41.5 40 47 31 47 L 14 47 Z M 21 23.5 L 21 40.5 L 29.5 40.5 C 34.5 40.5 37.5 37.5 37.5 32 C 37.5 26.5 34.5 23.5 29.5 23.5 Z" 
+        fill="#FFF9F0"/>
+
+  <!-- Signature Accent Dot in Sunshine Gold (#F2C14E) -->
+  <circle cx="49" cy="43" r="4.5" fill="#F2C14E"/>
+</svg>

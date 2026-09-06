@@ -1,5 +1,8 @@
 import { motion, useInView } from "motion/react";
 import { useRef, useState, useEffect } from "react";
+import { usePageMeta } from "./usePageMeta";
+import { initAnalytics, trackCtaClick, trackEvent } from "./analytics";
+import { NotFound } from "./components/NotFound";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHand,
@@ -32,6 +35,7 @@ import {
   faHardDrive,
   faFileArrowDown,
   faXmark,
+  faBars,
   faPrint,
   faMapPin,
   faLink,
@@ -88,14 +92,12 @@ function ScrollReveal({
   delay?: number;
   className?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-64px" });
   return (
     <motion.div
-      ref={ref}
       className={className}
       initial="hidden"
-      animate={inView ? "show" : "hidden"}
+      whileInView="show"
+      viewport={{ once: true, margin: "-48px" }}
       custom={delay}
       variants={fadeUp}
     >
@@ -123,10 +125,12 @@ function FloatShape({
     <motion.div
       className={`absolute pointer-events-none select-none ${className}`}
       style={{ width: size, height: size }}
-      animate={{
+      initial={{ y: 0, rotate: 0 }}
+      whileInView={{
         y: [0, -14, 0],
         rotate: shape === "square" ? [0, 12, 0] : [0, 4, 0],
       }}
+      viewport={{ once: false }}
       transition={{
         duration: 5 + delay * 0.7,
         repeat: Infinity,
@@ -348,66 +352,87 @@ function DocModal({ type, onClose }: { type: "resume" | "cover-letter"; onClose:
   const cl = coverLetterData;
 
   useEffect(() => {
+    trackEvent("modal_open", { doc_type: type, filename });
+  }, [type, filename]);
+
+  useEffect(() => {
     document.body.style.overflow = "hidden";
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        trackEvent("modal_close", { doc_type: type, reason: "escape_key" });
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
       document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [type, onClose]);
+
+  const handleClose = (reason: string) => {
+    trackEvent("modal_close", { doc_type: type, reason });
+    onClose();
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-foreground/40 backdrop-blur-sm py-8 px-4"
-      onClick={(e) => e.target === e.currentTarget && onClose()}
+      className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-foreground/40 backdrop-blur-sm py-4 px-2 sm:py-8 sm:px-4"
+      onClick={(e) => e.target === e.currentTarget && handleClose("backdrop")}
     >
       <motion.div
         initial={{ opacity: 0, y: 48, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 24, scale: 0.97 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className={`w-full ${isResume ? "max-w-5xl" : "max-w-2xl"} bg-card rounded-3xl border border-border shadow-2xl overflow-hidden`}
+        className={`w-full ${isResume ? "max-w-5xl" : "max-w-2xl"} bg-card rounded-2xl sm:rounded-3xl border border-border shadow-2xl overflow-hidden`}
       >
         {/* Toolbar */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/40 print:hidden">
-          <div className="flex items-center gap-2.5">
-            <FontAwesomeIcon icon={faFileArrowDown} className="w-4 h-4 text-primary" />
-            <span className="font-mono text-sm font-medium">{filename}</span>
+        <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 sm:px-6 sm:py-4 border-b border-border bg-muted/40 print:hidden">
+          <div className="flex items-center gap-2 min-w-0 max-w-[140px] sm:max-w-none">
+            <FontAwesomeIcon icon={faFileArrowDown} className="w-3.5 h-3.5 text-primary shrink-0" />
+            <span className="font-mono text-xs sm:text-sm font-medium truncate">{filename}</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {isResume && (
               <a
                 href="/Dhruv%20Kolhe.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 download="Dhruv Kolhe.pdf"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-semibold shadow-sm hover:shadow-md transition-shadow"
+                onClick={() =>
+                  trackCtaClick("modal_download_pdf", { doc_type: "resume", filename })
+                }
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary text-primary-foreground rounded-full text-xs sm:text-sm font-semibold shadow-sm hover:shadow-md transition-shadow"
               >
-                <FontAwesomeIcon icon={faExternalLink} className="w-3.5 h-3.5" />
-                Open / Download PDF
+                <FontAwesomeIcon icon={faExternalLink} className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                <span><span className="hidden min-[420px]:inline">Open / </span>PDF</span>
               </a>
             )}
             <motion.button
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => {
+                trackCtaClick("modal_print_save", { doc_type: isResume ? "resume" : "cover-letter", filename });
                 if (isResume) {
                   window.open("/Dhruv%20Kolhe.pdf", "_blank");
                 } else {
                   window.print();
                 }
               }}
-              className="inline-flex items-center gap-2 px-4 py-2 border border-border bg-card hover:bg-muted text-foreground rounded-full text-sm font-semibold shadow-sm transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 border border-border bg-card hover:bg-muted text-foreground rounded-full text-xs sm:text-sm font-semibold shadow-sm transition-colors"
             >
-              <FontAwesomeIcon icon={faPrint} className="w-3.5 h-3.5" />
-              {isResume ? "Print PDF" : "Save as PDF"}
+              <FontAwesomeIcon icon={faPrint} className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span><span className="hidden min-[420px]:inline">Save / </span>Print</span>
             </motion.button>
             <button
-              onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+              onClick={() => handleClose("close_button")}
+              className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground cursor-pointer"
             >
-              <FontAwesomeIcon icon={faXmark} className="w-4 h-4" />
+              <FontAwesomeIcon icon={faXmark} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
         </div>
@@ -422,7 +447,7 @@ function DocModal({ type, onClose }: { type: "resume" | "cover-letter"; onClose:
             />
           </div>
         ) : (
-          <div id="resume-print" className="p-8 md:p-12 font-body text-foreground bg-card">
+          <div id="resume-print" className="p-5 sm:p-8 md:p-12 font-body text-foreground bg-card">
             {/* Header — cover letter */}
             <div className="border-b-2 border-primary/30 pb-6 mb-7">
               <p className="font-display text-2xl md:text-3xl font-bold text-foreground mb-0.5">{d.name}</p>
@@ -468,6 +493,104 @@ export default function App() {
   const [scrolled, setScrolled] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
   const [coverOpen, setCoverOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // 404 Route Detection
+  const [is404, setIs404] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const path = window.location.pathname;
+    const hash = window.location.hash;
+    const isRoot = path === "/" || path === "/index.html" || path === "";
+    const isStaticFile =
+      path.startsWith("/Dhruv") ||
+      path.startsWith("/assets") ||
+      path.startsWith("/favicon") ||
+      path.includes(".");
+    if (!isRoot && !isStaticFile) return true;
+    if (hash === "#404") return true;
+    return false;
+  });
+
+  usePageMeta(resumeOpen ? "resume" : coverOpen ? "cover-letter" : null, is404);
+
+  const scrollToSection = (targetId: string, behavior: ScrollBehavior = "smooth") => {
+    const cleanId = targetId.replace(/^#/, "");
+    if (cleanId === "home" || !cleanId) {
+      window.scrollTo({ top: 0, behavior });
+      if (window.location.hash) {
+        window.history.pushState(null, "", window.location.pathname);
+      }
+      return;
+    }
+
+    const element = document.getElementById(cleanId);
+    if (element) {
+      element.scrollIntoView({ behavior, block: "start" });
+      window.history.pushState(null, "", `#${cleanId}`);
+    }
+  };
+
+  useEffect(() => {
+    initAnalytics();
+
+    // Disable automatic browser scroll restoration so explicit hashes scroll properly
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    const checkRoute = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      const isRoot = path === "/" || path === "/index.html" || path === "";
+      const isStaticFile =
+        path.startsWith("/Dhruv") ||
+        path.startsWith("/assets") ||
+        path.startsWith("/favicon") ||
+        path.includes(".");
+      if (!isRoot && !isStaticFile) {
+        setIs404(true);
+      } else if (hash === "#404") {
+        setIs404(true);
+      } else {
+        setIs404(false);
+      }
+    };
+
+    window.addEventListener("popstate", checkRoute);
+    window.addEventListener("hashchange", checkRoute);
+
+    // Initial hash scroll on mount
+    const initialHash = window.location.hash.replace(/^#/, "");
+    if (initialHash && initialHash !== "404") {
+      const timer = setTimeout(() => {
+        const el = document.getElementById(initialHash);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener("popstate", checkRoute);
+        window.removeEventListener("hashchange", checkRoute);
+      };
+    }
+
+    return () => {
+      window.removeEventListener("popstate", checkRoute);
+      window.removeEventListener("hashchange", checkRoute);
+    };
+  }, []);
+
+  const handleGoHome = () => {
+    if (window.location.hash === "#404") {
+      window.location.hash = "";
+    }
+    if (window.location.pathname !== "/" && window.location.pathname !== "/index.html") {
+      window.history.pushState(null, "", "/");
+    }
+    setIs404(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const id = setInterval(
@@ -483,55 +606,109 @@ export default function App() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  if (is404) {
+    return <NotFound onGoHome={handleGoHome} />;
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground font-body overflow-x-hidden">
 
       {resumeOpen && <DocModal type="resume" onClose={() => setResumeOpen(false)} />}
       {coverOpen  && <DocModal type="cover-letter" onClose={() => setCoverOpen(false)} />}
 
-      {/* ── Nav ─────────────────────────────────────────────────────────── */}
-      <motion.nav
-        initial={{ opacity: 0, y: -16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-4 flex items-center justify-between transition-all duration-300 ${
-          scrolled ? "bg-background/85 backdrop-blur-md border-b border-border" : ""
-        }`}
-      >
+      {/* ── Header / Nav ─────────────────────────────────────────────────── */}
+      <header role="banner">
+        <motion.nav
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className={`fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 md:px-10 py-3.5 sm:py-4 flex items-center justify-between transition-all duration-300 ${
+            scrolled ? "bg-background/85 backdrop-blur-md border-b border-border" : ""
+          }`}
+          aria-label="Main Navigation"
+        >
         <a
           href="#home"
-          className="font-display text-xl font-bold text-foreground hover:text-primary transition-colors"
+          onClick={(e) => {
+            e.preventDefault();
+            trackCtaClick("nav_logo_home", { location: "navbar" });
+            scrollToSection("home");
+          }}
+          className="font-display text-xl font-bold text-foreground hover:text-primary transition-colors cursor-pointer"
         >
           kolhe<span className="text-primary">.</span>
         </a>
 
         <div className="hidden md:flex items-center gap-8">
-          {["about", "projects", "contact"].map((item) => (
+          {["about", "skills", "projects", "contact"].map((item) => (
             <a
               key={item}
               href={`#${item}`}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                trackCtaClick("nav_section_link", { section: item, location: "navbar" });
+                scrollToSection(item);
+              }}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               {item}
             </a>
           ))}
         </div>
 
-        <motion.button
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={() => setResumeOpen(true)}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary text-primary-foreground text-xs sm:text-sm font-semibold shadow-sm hover:shadow-md transition-shadow"
-        >
-          <FontAwesomeIcon icon={faFileArrowDown} className="w-3.5 h-3.5" />
-          Resume
-        </motion.button>
+        <div className="flex items-center gap-2">
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => {
+              trackCtaClick("nav_resume_button", { location: "navbar" });
+              setResumeOpen(true);
+            }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary text-primary-foreground text-xs sm:text-sm font-semibold shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+          >
+            <FontAwesomeIcon icon={faFileArrowDown} className="w-3.5 h-3.5" />
+            Resume
+          </motion.button>
+
+          <button
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            className="md:hidden p-2 text-foreground/80 hover:text-foreground rounded-lg hover:bg-muted transition-colors cursor-pointer"
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            <FontAwesomeIcon icon={mobileMenuOpen ? faXmark : faBars} className="w-4 h-4" />
+          </button>
+        </div>
+
+        {mobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border px-6 py-4 flex flex-col gap-3 shadow-lg">
+            {["about", "skills", "projects", "contact"].map((item) => (
+              <a
+                key={item}
+                href={`#${item}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  trackCtaClick("nav_section_link", { section: item, location: "mobile_menu" });
+                  scrollToSection(item);
+                  setMobileMenuOpen(false);
+                }}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground py-1 transition-colors cursor-pointer capitalize"
+              >
+                {item}
+              </a>
+            ))}
+          </div>
+        )}
       </motion.nav>
+      </header>
+
+      {/* ── Main Content ─────────────────────────────────────────────────── */}
+      <main id="main-content" role="main">
 
       {/* ── Hero ────────────────────────────────────────────────────────── */}
       <section
         id="home"
-        className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-14 md:pt-28 md:pb-16 overflow-hidden"
+        className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-20 pb-12 sm:pt-24 sm:pb-14 md:pt-28 md:pb-16 overflow-hidden scroll-mt-20 sm:scroll-mt-24"
       >
         {/* Memphis floating shapes */}
         <FloatShape className="top-24 left-6 md:left-16"           size={72} color="#C9523420" shape="circle"   delay={0}   />
@@ -547,16 +724,19 @@ export default function App() {
           {/* Greeting pill */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold mb-6 sm:mb-8"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold mb-6 sm:mb-8"
           >
             <motion.span
-              animate={{ rotate: [0, 16, -8, 16, -4, 10, 0] }}
+              initial={{ rotate: 0 }}
+              whileInView={{ rotate: [0, 16, -8, 16, -4, 10, 0] }}
+              viewport={{ once: false }}
               transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 3.5 }}
               className="inline-block origin-[70%_70%]"
             >
-              <FontAwesomeIcon icon={faHand} className="w-4 h-4" />
+              <FontAwesomeIcon icon={faHand} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </motion.span>
             hey there, nice to meet you!
           </motion.div>
@@ -564,19 +744,20 @@ export default function App() {
           {/* Main headline */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.75, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           >
             <h1 className="font-display leading-[0.95] mb-5 sm:mb-6">
-              <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-foreground">
+              <span className="block text-4xl min-[360px]:text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-foreground">
                 {"I'm "}
                 <span className="text-primary italic">Dhruv</span>
                 {","}
               </span>
-              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-muted-foreground italic mt-2">
+              <span className="block text-2xl min-[360px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-muted-foreground italic mt-2">
                 cse student &amp; builder of
               </span>
-              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-secondary italic mt-1">
+              <span className="block text-3xl min-[360px]:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-secondary italic mt-1">
                 tiny, meaningful things.
               </span>
             </h1>
@@ -585,9 +766,10 @@ export default function App() {
           {/* Bio */}
           <motion.p
             initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.65, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
-            className="font-body text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-8 sm:mb-10 leading-relaxed"
+            className="font-body text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2 sm:px-0"
           >
             I love to learn and create new things, and understand the world around
             me, one bug at a time. I write code, break it, fix it, and, every now
@@ -597,15 +779,21 @@ export default function App() {
           {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.65, delay: 0.46, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 mb-8 sm:mb-10"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-10 w-full max-w-xs sm:max-w-none"
           >
             <motion.a
               href="#projects"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center justify-center gap-2 px-7 sm:px-8 py-3 sm:py-3.5 bg-primary text-primary-foreground rounded-full font-semibold shadow-sm hover:shadow-md transition-shadow"
+              onClick={(e) => {
+                e.preventDefault();
+                trackCtaClick("hero_see_my_work", { location: "hero", target: "#projects" });
+                scrollToSection("projects");
+              }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-primary text-primary-foreground rounded-full text-sm sm:text-base font-semibold shadow-sm hover:shadow-md transition-shadow cursor-pointer"
             >
               <FontAwesomeIcon icon={faLaptopCode} className="w-4 h-4" />
               see my work
@@ -614,7 +802,12 @@ export default function App() {
               href="#contact"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center justify-center gap-2 px-7 sm:px-8 py-3 sm:py-3.5 border border-border text-foreground rounded-full font-semibold hover:bg-muted transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                trackCtaClick("hero_say_hello", { location: "hero", target: "#contact" });
+                scrollToSection("contact");
+              }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 border border-border text-foreground rounded-full text-sm sm:text-base font-semibold hover:bg-muted transition-colors cursor-pointer"
             >
               <FontAwesomeIcon icon={faFaceSmile} className="w-4 h-4 text-secondary" />
               say hello
@@ -622,8 +815,11 @@ export default function App() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => setCoverOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-7 sm:px-8 py-3 sm:py-3.5 bg-accent text-accent-foreground rounded-full font-semibold hover:bg-accent/80 transition-colors"
+              onClick={() => {
+                trackCtaClick("hero_cover_letter", { location: "hero" });
+                setCoverOpen(true);
+              }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-accent text-accent-foreground rounded-full text-sm sm:text-base font-semibold hover:bg-accent/80 transition-colors cursor-pointer"
             >
               <FontAwesomeIcon icon={faFileArrowDown} className="w-4 h-4" />
               cover letter
@@ -633,9 +829,10 @@ export default function App() {
           {/* Currently ticker */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.72 }}
-            className="inline-flex items-center gap-2.5 text-sm text-muted-foreground font-body"
+            className="inline-flex items-center gap-2.5 text-xs sm:text-sm text-muted-foreground font-body"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75" />
@@ -657,17 +854,24 @@ export default function App() {
           {/* Scroll indicator arrow */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.85 }}
             className="mt-6 sm:mt-8"
           >
             <motion.a
               href="#about"
               aria-label="Scroll down to about"
-              animate={{ y: [0, 6, 0] }}
+              whileInView={{ y: [0, 6, 0] }}
+              viewport={{ once: false }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               whileHover={{ scale: 1.2, y: 2 }}
               whileTap={{ scale: 0.92 }}
+              onClick={(e) => {
+                e.preventDefault();
+                trackCtaClick("hero_scroll_down", { location: "hero", target: "#about" });
+                scrollToSection("about");
+              }}
               className="inline-flex items-center justify-center w-9 h-9 rounded-full text-foreground/50 hover:text-primary hover:bg-card/70 border border-transparent hover:border-border transition-all cursor-pointer"
             >
               <FontAwesomeIcon icon={faArrowDown} className="w-4 h-4" />
@@ -677,7 +881,7 @@ export default function App() {
       </section>
 
       {/* ── About ───────────────────────────────────────────────────────── */}
-      <section id="about" className="py-28 px-6">
+      <section id="about" className="py-20 sm:py-28 px-4 sm:px-6 scroll-mt-20 sm:scroll-mt-24">
         <div className="max-w-5xl mx-auto">
           <ScrollReveal>
             <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary font-medium">
@@ -749,14 +953,16 @@ export default function App() {
 
                 {/* Floating badge */}
                 <motion.div
-                  animate={{ y: [0, -6, 0] }}
+                  initial={{ y: 0 }}
+                  whileInView={{ y: [0, -6, 0] }}
+                  viewport={{ once: false }}
                   transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute -bottom-4 -right-4 bg-card border border-border rounded-2xl px-4 py-3 shadow-lg flex items-center gap-3"
+                  className="absolute -bottom-3 -right-2 sm:-bottom-4 sm:-right-4 bg-card border border-border rounded-2xl px-3 py-2 sm:px-4 sm:py-3 shadow-lg flex items-center gap-2.5 sm:gap-3"
                 >
-                  <FontAwesomeIcon icon={faGraduationCap} className="w-5 h-5 text-primary" />
+                  <FontAwesomeIcon icon={faGraduationCap} className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   <div>
-                    <p className="font-mono text-xs text-muted-foreground">status</p>
-                    <p className="font-display font-bold text-foreground text-sm">undergrad</p>
+                    <p className="font-mono text-[10px] sm:text-xs text-muted-foreground">status</p>
+                    <p className="font-display font-bold text-foreground text-xs sm:text-sm">undergrad</p>
                   </div>
                 </motion.div>
 
@@ -769,7 +975,7 @@ export default function App() {
       </section>
 
       {/* ── Skills ──────────────────────────────────────────────────────── */}
-      <section className="py-28 px-6 bg-muted/50 border-y border-border">
+      <section id="skills" className="py-20 sm:py-28 px-4 sm:px-6 bg-muted/50 border-y border-border scroll-mt-20 sm:scroll-mt-24">
         <div className="max-w-5xl mx-auto">
           <ScrollReveal>
             <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary font-medium">
@@ -778,13 +984,13 @@ export default function App() {
             <h2 className="font-display text-3xl md:text-5xl font-bold mt-3 mb-3 leading-tight">
               tools I reach for
             </h2>
-            <p className="text-muted-foreground mb-12 text-base md:text-lg max-w-lg">
+            <p className="text-muted-foreground mb-10 sm:mb-12 text-base md:text-lg max-w-lg">
               Still learning, always adding to the list — here{"'"}s what I{"'"}m comfortable with right now.
             </p>
           </ScrollReveal>
 
           <motion.div
-            className="flex flex-wrap gap-3"
+            className="flex flex-wrap gap-2.5 sm:gap-3"
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-60px" }}
@@ -796,10 +1002,10 @@ export default function App() {
                 variants={popIn}
                 whileHover={{ scale: 1.08, y: -4 }}
                 transition={{ type: "spring", stiffness: 320, damping: 20 }}
-                className="flex items-center gap-2.5 px-4 py-2.5 bg-card rounded-xl border border-border shadow-sm cursor-default"
+                className="flex items-center gap-2 sm:gap-2.5 px-3.5 py-2 sm:px-4 sm:py-2.5 bg-card rounded-xl border border-border shadow-sm cursor-default text-xs sm:text-sm font-medium font-body"
               >
-                <FontAwesomeIcon icon={icon} className="w-4 h-4 flex-shrink-0" style={{ color }} />
-                <span className="text-sm font-medium font-body">{label}</span>
+                <FontAwesomeIcon icon={icon} className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" style={{ color }} />
+                <span>{label}</span>
               </motion.div>
             ))}
           </motion.div>
@@ -807,7 +1013,7 @@ export default function App() {
       </section>
 
       {/* ── Projects ────────────────────────────────────────────────────── */}
-      <section id="projects" className="py-28 px-6">
+      <section id="projects" className="py-20 sm:py-28 px-4 sm:px-6 scroll-mt-20 sm:scroll-mt-24">
         <div className="max-w-5xl mx-auto">
           <ScrollReveal>
             <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary font-medium">
@@ -816,48 +1022,48 @@ export default function App() {
             <h2 className="font-display text-3xl md:text-5xl font-bold mt-3 mb-3 leading-tight">
               things I{"'"}ve built
             </h2>
-            <p className="text-muted-foreground mb-12 text-base md:text-lg max-w-lg">
+            <p className="text-muted-foreground mb-10 sm:mb-12 text-base md:text-lg max-w-lg">
               Some practical, some just for fun, all made with genuine care. Source is always open.
             </p>
           </ScrollReveal>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {projects.map((project, i) => (
               <ScrollReveal key={project.title} delay={i * 0.1}>
                 <motion.div
                   whileHover={{ y: -8, rotate: 0.4 }}
                   transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  className={`${project.bgClass} border ${project.borderClass} rounded-3xl p-6 h-full flex flex-col group`}
+                  className={`${project.bgClass} border ${project.borderClass} rounded-2xl sm:rounded-3xl p-5 sm:p-6 h-full flex flex-col group`}
                 >
                   {/* Icon */}
-                  <div className="flex items-start mb-5">
+                  <div className="flex items-start mb-4 sm:mb-5">
                     <motion.div
                       whileHover={{ scale: 1.2, rotate: [-4, 4, -4] }}
                       transition={{ duration: 0.3 }}
-                      className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center"
                       style={{ backgroundColor: project.iconColor + "20" }}
                     >
                       <FontAwesomeIcon
                         icon={project.icon}
-                        className="w-5 h-5"
+                        className="w-4 h-4 sm:w-5 sm:h-5"
                         style={{ color: project.iconColor }}
                       />
                     </motion.div>
                   </div>
 
-                  <h3 className="font-display text-xl font-bold mb-2 text-foreground">
+                  <h3 className="font-display text-lg sm:text-xl font-bold mb-2 text-foreground">
                     {project.title}
                   </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed flex-1 mb-5">
+                  <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed flex-1 mb-4 sm:mb-5">
                     {project.desc}
                   </p>
 
                   {/* Tags */}
-                  <div className="flex flex-wrap gap-1.5 mb-5">
+                  <div className="flex flex-wrap gap-1.5 mb-4 sm:mb-5">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-xs px-2.5 py-1 bg-background/70 rounded-lg border border-border/60 font-mono"
+                        className="text-[11px] sm:text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 bg-background/70 rounded-lg border border-border/60 font-mono"
                       >
                         {tag}
                       </span>
@@ -869,7 +1075,13 @@ export default function App() {
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+                    onClick={() =>
+                      trackCtaClick("project_view_source", {
+                        project_title: project.title,
+                        repo_url: project.github,
+                      })
+                    }
+                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
                   >
                     <FontAwesomeIcon icon={faGithub} className="w-3.5 h-3.5" />
                     view source
@@ -881,12 +1093,14 @@ export default function App() {
           </div>
         </div>
       </section>
+      </main>
 
-      {/* ── Contact ─────────────────────────────────────────────────────── */}
-      <section id="contact" className="py-28 px-6 relative overflow-hidden">
+      {/* ── Footer & Contact ─────────────────────────────────────────────── */}
+      <footer role="contentinfo">
+      <section id="contact" className="py-20 sm:py-28 px-4 sm:px-6 relative overflow-hidden scroll-mt-20 sm:scroll-mt-24">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary/6" />
-          <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-secondary/8" />
+          <div className="absolute -top-24 -right-24 w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-primary/6" />
+          <div className="absolute -bottom-24 -left-24 w-64 h-64 sm:w-80 sm:h-80 rounded-full bg-secondary/8" />
         </div>
 
         <div className="relative max-w-2xl mx-auto text-center">
@@ -894,11 +1108,11 @@ export default function App() {
             <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary font-medium">
               04. contact
             </span>
-            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold mt-3 mb-4 leading-tight">
+            <h2 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mt-3 mb-4 leading-tight">
               {"let's be friends"}
               <span className="text-secondary italic"> :)</span>
             </h2>
-            <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-10 max-w-md mx-auto">
+            <p className="text-muted-foreground text-sm sm:text-base md:text-lg leading-relaxed mb-8 sm:mb-10 max-w-md mx-auto px-2 sm:px-0">
               Whether you want to talk about a project, collaborate on something cool, or
               just say hi — my inbox is always open. No formalities needed.
             </p>
@@ -907,33 +1121,51 @@ export default function App() {
               href="mailto:davpatal@gmail.com"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2.5 px-8 py-4 bg-primary text-primary-foreground rounded-full font-semibold text-lg shadow-sm hover:shadow-md transition-shadow mb-12"
+              onClick={() =>
+                trackCtaClick("contact_drop_me_a_line", {
+                  email: "davpatal@gmail.com",
+                  location: "contact",
+                })
+              }
+              className="inline-flex items-center gap-2.5 px-6 py-3.5 sm:px-8 sm:py-4 bg-primary text-primary-foreground rounded-full font-semibold text-base sm:text-lg shadow-sm hover:shadow-md transition-shadow mb-10 sm:mb-12"
             >
-              <FontAwesomeIcon icon={faEnvelope} className="w-5 h-5" />
+              <FontAwesomeIcon icon={faEnvelope} className="w-4 h-4 sm:w-5 sm:h-5" />
               drop me a line
             </motion.a>
 
             {/* Social links */}
-            <div className="flex flex-wrap items-center justify-center gap-7 sm:gap-10">
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-7 sm:gap-10 mb-8">
               {socials.map(({ icon, label, href }) => (
                 <motion.a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() =>
+                    trackCtaClick("social_icon_click", {
+                      platform: label,
+                      url: href,
+                      location: "contact",
+                    })
+                  }
                   whileHover={{ scale: 1.2, y: -4 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 300, damping: 18 }}
-                  className="flex flex-col items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                  className="flex flex-col items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors p-1"
                 >
-                  <FontAwesomeIcon icon={icon} className="w-5 h-5" />
-                  <span className="text-xs font-mono">{label}</span>
+                  <FontAwesomeIcon icon={icon} className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="text-[11px] sm:text-xs font-mono">{label}</span>
                 </motion.a>
               ))}
             </div>
+
+            <p className="text-xs text-muted-foreground/80 font-mono">
+              Designed &amp; built by Dhruv Kolhe • All rights reserved.
+            </p>
           </ScrollReveal>
         </div>
       </section>
+      </footer>
 
     </div>
   );
