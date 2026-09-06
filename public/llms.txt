@@ -29,6 +29,3 @@
 ## Contact & Collaboration
 - Open to software engineering internships, junior developer roles, and open-source contributions.
 - Email: davpatal@gmail.com
-
-## Detailed Documentation
-- Full Profile & Project Breakdown: https://dhruvkolhe.netlify.app/llms-full.txt
