@@ -1,13 +1,13 @@
 # Robots.txt for Dhruv Kolhe Portfolio
-# https://dhruvmkolhe.github.io/
+# https://dhruvkolhe.netlify.app/
 
 User-agent: *
 Allow: /
 Disallow: /dist/
 
 # Search Engine Sitemaps
-Sitemap: https://dhruvmkolhe.github.io/sitemap.xml
+Sitemap: https://dhruvkolhe.netlify.app/sitemap.xml
 
 # LLM Crawler Guidance
-# https://dhruvmkolhe.github.io/llms.txt
+# https://dhruvkolhe.netlify.app/llms.txt
 

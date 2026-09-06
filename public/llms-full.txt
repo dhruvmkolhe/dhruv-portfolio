@@ -1,4 +1,4 @@
-﻿# Dhruv Kolhe — Complete Developer Profile & Technical Summary
+# Dhruv Kolhe — Complete Developer Profile & Technical Summary
 
 > Extended AI crawler documentation providing comprehensive context on Dhruv Kolhe, Computer Science undergraduate at Pimpri Chinchwad University, full-stack software engineer, and creator.
 
@@ -7,7 +7,7 @@ Dhruv Kolhe is an undergraduate Computer Science student at Pimpri Chinchwad Uni
 
 - Location: Pune, Maharashtra, India
 - Email: davpatal@gmail.com
-- Main Site: https://dhruvmkolhe.github.io/
+- Main Site: https://dhruvkolhe.netlify.app/
 - GitHub: https://github.com/dhruvmkolhe
 - LinkedIn: https://www.linkedin.com/in/dhruv-kolhe-409706303/
 - X / Twitter: https://x.com/DhruvKolhe

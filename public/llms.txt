@@ -1,4 +1,4 @@
-﻿# Dhruv Kolhe — Developer Portfolio
+# Dhruv Kolhe — Developer Portfolio
 
 > Personal portfolio and developer profile of Dhruv Kolhe, a Computer Science undergraduate and software engineer specializing in modern web development, intuitive UX, and clean code.
 
@@ -8,7 +8,7 @@
 - University: Pimpri Chinchwad University (PCU), Pune, India
 - Degree: Bachelor of Technology (B.Tech) in Computer Science & Engineering
 - Email: davpatal@gmail.com
-- Portfolio Website: https://dhruvmkolhe.github.io/
+- Portfolio Website: https://dhruvkolhe.netlify.app/
 - GitHub: https://github.com/dhruvmkolhe
 - LinkedIn: https://www.linkedin.com/in/dhruv-kolhe-409706303/
 - X / Twitter: https://x.com/DhruvKolhe
@@ -31,4 +31,4 @@
 - Email: davpatal@gmail.com
 
 ## Detailed Documentation
-- Full Profile & Project Breakdown: https://dhruvmkolhe.github.io/llms-full.txt
+- Full Profile & Project Breakdown: https://dhruvkolhe.netlify.app/llms-full.txt
