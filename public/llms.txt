@@ -5,7 +5,7 @@
 ## Core Profile
 - Name: Dhruv Kolhe
 - Role: Computer Science Student & Software Engineer
-- University: Pimpri Chinchwad University (PCU), Pune, India
+- University: Parul University (PU), Gujarat, India
 - Degree: Bachelor of Technology (B.Tech) in Computer Science & Engineering
 - Email: davpatal@gmail.com
 - Portfolio Website: https://dhruvkolhe.netlify.app/

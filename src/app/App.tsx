@@ -271,7 +271,7 @@ const resumeData = {
   education: [
     {
       degree: "B.Tech in Computer Science & Engineering",
-      school: "Pimpri Chinchwad University",
+      school: "Parul University",
       period: "2022 – 2026",
     },
   ],

@@ -15,7 +15,7 @@ export const PAGE_METAS: Record<string, PageMeta> = {
   about: {
     title: "About | Dhruv Kolhe",
     description:
-      "Learn more about Dhruv Kolhe, a Computer Science student at Pimpri Chinchwad University with hands-on experience in full-stack engineering, React, and Python.",
+      "Learn more about Dhruv Kolhe, a Computer Science student at Parul University with hands-on experience in full-stack software engineering, React, and Python.",
   },
   skills: {
     title: "Skills & Toolbox | Dhruv Kolhe",
@@ -35,7 +35,7 @@ export const PAGE_METAS: Record<string, PageMeta> = {
   resume: {
     title: "Resume | Dhruv Kolhe",
     description:
-      "View and download the verified resume of Dhruv Kolhe, highlighting education at PCU, engineering internship experience, technical skillsets, and projects.",
+      "View and download the verified resume of Dhruv Kolhe, highlighting education at Parul University, engineering internship experience, skills, and projects.",
   },
   "cover-letter": {
     title: "Cover Letter | Dhruv Kolhe",
