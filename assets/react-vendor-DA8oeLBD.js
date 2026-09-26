@@ -1,4 +1,4 @@
-import{r as yc}from"./fontawesome-vendor-D2XmCEOp.js";var hi={exports:{}},ve={},yi={exports:{}},gi={};/**
+import{r as yc}from"./fontawesome-vendor-1CjXuXYN.js";var hi={exports:{}},ve={},yi={exports:{}},gi={};/**
  * @license React
  * scheduler.production.min.js
  *
