@@ -39,12 +39,15 @@ import {
   faPrint,
   faMapPin,
   faLink,
+  faBoxesStacked,
+  faFileMedical,
+  faFileContract,
+  faPlay,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faGithub,
   faLinkedin,
   faXTwitter,
-  faLetterboxd,
   faPython,
   faJsSquare,
   faReact,
@@ -201,6 +204,7 @@ const projects = [
     borderClass: "border-[#f0cdc2]",
     iconColor: "#C95234",
     github: "https://github.com/dhruvmkolhe/project-hub",
+    live: "https://project-hub-pearl-omega.vercel.app/",
   },
   {
     icon: faCode,
@@ -221,6 +225,40 @@ const projects = [
     borderClass: "border-[#edd98c]",
     iconColor: "#C9A020",
     github: "https://github.com/dhruvmkolhe/common",
+    live: "https://url-short-mocha-nine.vercel.app/",
+  },
+  {
+    icon: faBoxesStacked,
+    title: "Mini Ops ERP",
+    desc: "A full-stack, transactional ERP platform with ACID-compliant inventory tracking, role-based workflows, and automated shortage detection.",
+    tags: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "Jest", "Tailwind CSS"],
+    bgClass: "bg-[#EEF2FF]",
+    borderClass: "border-[#c7d2fe]",
+    iconColor: "#4F46E5",
+    github: "https://github.com/dhruvmkolhe/Mini-ops-ERP",
+    live: "https://mini-ops-erp-git-master-davpatal-1124s-projects.vercel.app/",
+  },
+  {
+    icon: faFileMedical,
+    title: "MediShare",
+    desc: "Replaces paper prescriptions with digitally signed, QR-verifiable medical credentials that pharmacists can validate instantly — preventing forgery, double-dispensing, and dangerous drug combinations.",
+    tags: ["React 19", "Node.js", "MongoDB", "Ed25519"],
+    bgClass: "bg-[#ECFDF5]",
+    borderClass: "border-[#a7f3d0]",
+    iconColor: "#059669",
+    github: "https://github.com/dhruvmkolhe/medishare-beta",
+    live: "https://medishare-beta-vb1c.vercel.app/",
+  },
+  {
+    icon: faFileContract,
+    title: "TermSight",
+    desc: "AI-powered contract and Terms of Service auditor that transforms dense legal jargon into plain-language risk assessments, detects predatory clauses, scores fairness, and generates negotiation counter-clauses.",
+    tags: ["React", "TypeScript", "Vite", "Tailwind CSS", "Node.js"],
+    bgClass: "bg-[#FDF4FF]",
+    borderClass: "border-[#e9d5ff]",
+    iconColor: "#7C3AED",
+    github: "https://github.com/dhruvmkolhe/termsight-v1",
+    live: "https://termsight-gamma.vercel.app/",
   },
 ];
 
@@ -249,12 +287,10 @@ const currently = [
 ];
 
 const socials = [
-  { icon: faGithub,     label: "github",      href: "https://github.com/dhruvmkolhe",                   brand: true  },
-  { icon: faLinkedin,   label: "linkedin",    href: "https://www.linkedin.com/in/dhruv-kolhe-409706303/", brand: true  },
-  { icon: faXTwitter,   label: "x / twitter", href: "https://x.com/DhruvKolhe",                        brand: true  },
-  { icon: faLetterboxd, label: "letterboxd",  href: "https://letterboxd.com/cinepunmaster/",            brand: true  },
-  { icon: faTv,         label: "serializd",   href: "https://www.serializd.com/user/cinepunmaster",     brand: false },
-  { icon: faEnvelope,   label: "email",       href: "mailto:davpatal@gmail.com",                        brand: false },
+  { icon: faGithub,   label: "github",      href: "https://github.com/dhruvmkolhe",                   brand: true  },
+  { icon: faLinkedin, label: "linkedin",    href: "https://www.linkedin.com/in/dhruv-kolhe-409706303/", brand: true  },
+  { icon: faXTwitter, label: "x / twitter", href: "https://x.com/DhruvKolhe",                        brand: true  },
+  { icon: faEnvelope, label: "email",       href: "mailto:davpatal@gmail.com",                        brand: false },
 ];
 
 // ── Resume Data ──────────────────────────────────────────────────────────────
@@ -311,6 +347,26 @@ const resumeData = {
       name: "LinkForge",
       stack: "React · Node.js · PostgreSQL · Redis",
       desc: "Production-grade URL management system with analytics and caching.",
+    },
+    {
+      name: "Mini Ops ERP",
+      stack: "React · TypeScript · Node.js · Express · PostgreSQL · Jest",
+      desc: "Full-stack ERP platform with ACID-compliant inventory tracking, role-based workflows, and automated shortage detection.",
+    },
+    {
+      name: "MediShare",
+      stack: "React 19 · Node.js · MongoDB · Ed25519",
+      desc: "Digital prescription platform with QR-verifiable medical credentials and forgery prevention.",
+    },
+    {
+      name: "TermSight",
+      stack: "React · TypeScript · Vite · Tailwind CSS · Node.js",
+      desc: "AI-powered legal auditor that transforms dense Terms of Service into plain-language risk assessments.",
+    },
+    {
+      name: "Netflix Clone",
+      stack: "HTML · CSS · JavaScript",
+      desc: "Responsive streaming web app with movie browsing, video playback, real-time search, and user authentication.",
     },
   ],
   skills: {
@@ -399,17 +455,16 @@ function DocModal({ type, onClose }: { type: "resume" | "cover-letter"; onClose:
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {isResume && (
               <a
-                href="/Dhruv%20Kolhe.pdf"
+                href="https://drive.google.com/file/d/1FitTaO4b_5tnIYWcfT4qBFygM0zDsy5g/view"
                 target="_blank"
                 rel="noopener noreferrer"
-                download="Dhruv Kolhe.pdf"
                 onClick={() =>
-                  trackCtaClick("modal_download_pdf", { doc_type: "resume", filename })
+                  trackCtaClick("modal_open_drive", { doc_type: "resume", filename })
                 }
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-primary text-primary-foreground rounded-full text-xs sm:text-sm font-semibold shadow-sm hover:shadow-md transition-shadow"
               >
                 <FontAwesomeIcon icon={faExternalLink} className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                <span><span className="hidden min-[420px]:inline">Open / </span>PDF</span>
+                <span><span className="hidden min-[420px]:inline">Open in </span>Drive</span>
               </a>
             )}
             <motion.button
@@ -418,7 +473,7 @@ function DocModal({ type, onClose }: { type: "resume" | "cover-letter"; onClose:
               onClick={() => {
                 trackCtaClick("modal_print_save", { doc_type: isResume ? "resume" : "cover-letter", filename });
                 if (isResume) {
-                  window.open("/Dhruv%20Kolhe.pdf", "_blank");
+                  window.open("https://drive.google.com/file/d/1FitTaO4b_5tnIYWcfT4qBFygM0zDsy5g/view", "_blank");
                 } else {
                   window.print();
                 }
@@ -441,9 +496,10 @@ function DocModal({ type, onClose }: { type: "resume" | "cover-letter"; onClose:
         {isResume ? (
           <div className="w-full h-[82vh] bg-muted/20">
             <iframe
-              src="/Dhruv%20Kolhe.pdf"
+              src="https://drive.google.com/file/d/1-2bjD-Yh2CmnG16ecGbo529hvQZMnle4/preview"
               className="w-full h-full border-0"
-              title="Dhruv Kolhe PDF"
+              title="Dhruv Kolhe Resume"
+              allow="autoplay"
             />
           </div>
         ) : (
@@ -1070,23 +1126,46 @@ export default function App() {
                     ))}
                   </div>
 
-                  {/* Link */}
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() =>
-                      trackCtaClick("project_view_source", {
-                        project_title: project.title,
-                        repo_url: project.github,
-                      })
-                    }
-                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
-                  >
-                    <FontAwesomeIcon icon={faGithub} className="w-3.5 h-3.5" />
-                    view source
-                    <FontAwesomeIcon icon={faExternalLink} className="w-2.5 h-2.5 opacity-60" />
-                  </a>
+                  {/* Links */}
+                  <div className="flex items-center gap-4 mt-auto pt-1">
+                    {"live" in project && project.live && (
+                      <a
+                        href={project.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() =>
+                          trackCtaClick("project_live_demo", {
+                            project_title: project.title,
+                            live_url: project.live,
+                          })
+                        }
+                        className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+                      >
+                        <FontAwesomeIcon icon={faExternalLink} className="w-3 h-3" />
+                        live demo
+                      </a>
+                    )}
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() =>
+                        trackCtaClick("project_view_source", {
+                          project_title: project.title,
+                          repo_url: project.github,
+                        })
+                      }
+                      className={`inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold ${
+                        "live" in project && project.live
+                          ? "text-muted-foreground hover:text-foreground"
+                          : "text-primary hover:text-primary/80"
+                      } transition-colors`}
+                    >
+                      <FontAwesomeIcon icon={faGithub} className="w-3.5 h-3.5" />
+                      view source
+                      <FontAwesomeIcon icon={faExternalLink} className="w-2.5 h-2.5 opacity-60" />
+                    </a>
+                  </div>
                 </motion.div>
               </ScrollReveal>
             ))}
