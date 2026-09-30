@@ -236,7 +236,7 @@ const projects = [
     borderClass: "border-[#c7d2fe]",
     iconColor: "#4F46E5",
     github: "https://github.com/dhruvmkolhe/Mini-ops-ERP",
-    live: "https://mini-ops-erp-git-master-davpatal-1124s-projects.vercel.app/",
+    live: "https://mini-ops-erp-ruby.vercel.app/",
   },
   {
     icon: faFileMedical,
